@@ -1,0 +1,143 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:scene="using:DataStructuresVisualizer.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DataStructuresVisualizer.Views.LinkedListAlgorithmsView">
+  <UserControl.Styles>
+    <Style Selector="Border.listNode.changed TextBlock">
+      <Setter Property="Foreground" Value="#102033" />
+    </Style>
+    <Style Selector="Border.listNode">
+      <Setter Property="Width" Value="66" />
+      <Setter Property="Height" Value="54" />
+      <Setter Property="CornerRadius" Value="16" />
+      <Setter Property="Background" Value="#284462" />
+      <Setter Property="BorderBrush" Value="#537A9D" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.25" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.listNode.changed">
+      <Setter Property="Background" Value="#FFD369" />
+      <Setter Property="BorderBrush" Value="#FFF3B0" />
+    </Style>
+    <Style Selector="TextBlock.sectionTitle">
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Foreground" Value="{StaticResource Accent}" />
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.panelLabel">
+      <Setter Property="Foreground" Value="{StaticResource Muted}" />
+      <Setter Property="FontSize" Value="11" />
+    </Style>
+  </UserControl.Styles>
+
+  <Grid ColumnDefinitions="330,*,230">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="0,0,12,0" Spacing="8">
+      <TextBlock Classes="sectionTitle" Text="Раздел 4. Алгоритмы со связными списками" />
+      <TextBlock TextWrapping="Wrap"
+                 Foreground="{StaticResource Muted}"
+                 Text="Выберите алгоритм. Добавление, удаление и перемещение узлов анимируются на канве." />
+
+      <TextBlock Classes="panelLabel" Text="Алгоритм" />
+      <ComboBox x:Name="TaskCombo"
+                HorizontalAlignment="Stretch"
+                SelectionChanged="TaskSelector_SelectionChanged">
+        <ComboBoxItem Content="1. Переворот списка" />
+        <ComboBoxItem Content="2. Последний элемент в начало" />
+        <ComboBoxItem Content="3. Первый элемент в конец" />
+        <ComboBoxItem Content="4. Количество различных элементов" />
+        <ComboBoxItem Content="5. Удалить неуникальные элементы" />
+        <ComboBoxItem Content="6. Вставить список после первого x" />
+        <ComboBoxItem Content="7. Вставить E в упорядоченный список" />
+        <ComboBoxItem Content="8. Удалить все элементы e" />
+        <ComboBoxItem Content="9. Вставить F перед первым E" />
+        <ComboBoxItem Content="10. Дописать список E" />
+        <ComboBoxItem Content="11. Разбить по первому X" />
+        <ComboBoxItem Content="12. Удвоить список" />
+        <ComboBoxItem Content="13. Поменять местами два элемента" />
+      </ComboBox>
+
+      <TextBlock Classes="panelLabel" Text="Исходный список" />
+      <TextBox x:Name="LinkedListValuesInput"
+               Height="60"
+               AcceptsReturn="True"
+               FontFamily="Consolas,DejaVu Sans Mono"
+               Text="8 3 12 5 3 7 1" />
+      <WrapPanel>
+        <Button Content="Случайные значения" Click="RandomValues_Click" />
+        <Button Content="Применить ввод" Click="ApplyValues_Click" />
+      </WrapPanel>
+
+      <StackPanel x:Name="Param1Panel" Spacing="4">
+        <TextBlock x:Name="Param1Label" Classes="panelLabel" Text="Параметр" />
+        <TextBox x:Name="Param1Input" Text="3" />
+      </StackPanel>
+      <StackPanel x:Name="Param2Panel" Spacing="4">
+        <TextBlock x:Name="Param2Label" Classes="panelLabel" Text="Второй параметр" />
+        <TextBox x:Name="Param2Input" Text="5" />
+      </StackPanel>
+
+      <StackPanel x:Name="SecondListPanel" Spacing="4" IsVisible="False">
+        <TextBlock Classes="panelLabel" Text="Список E" />
+        <TextBox x:Name="SecondValuesInput"
+                 Height="60"
+                 AcceptsReturn="True"
+                 FontFamily="Consolas,DejaVu Sans Mono"
+                 Text="2 7 4" />
+        <TextBlock Classes="panelLabel" Text="Файл LinkedListInput" />
+        <ComboBox x:Name="LinkedListFileCombo" HorizontalAlignment="Stretch" />
+        <Button Content="Загрузить L и E из файла"
+                HorizontalAlignment="Stretch"
+                Click="LoadLinkedListFile_Click" />
+      </StackPanel>
+
+      <WrapPanel>
+        <Button Content="Выполнить" Click="Execute_Click" />
+        <Button Content="Сброс" Click="Reset_Click" />
+      </WrapPanel>
+      <Border Background="#15263D" CornerRadius="10" Padding="10">
+        <TextBlock x:Name="LinkedListStatus" TextWrapping="Wrap" Text="Выберите алгоритм." />
+      </Border>
+      <Border Background="#102033" CornerRadius="10" Padding="10">
+        <TextBlock x:Name="TaskDescriptionText"
+                   TextWrapping="Wrap"
+                   Foreground="{StaticResource Muted}"
+                   Text="Список — последовательность узлов, связанных ссылками." />
+      </Border>
+      </StackPanel>
+    </ScrollViewer>
+
+    <Border Grid.Column="1" Background="#0C1A2B" CornerRadius="16" Padding="12">
+      <Grid RowDefinitions="Auto,*,Auto">
+        <TextBlock Grid.Row="0"
+                   Text="HEAD →"
+                   Foreground="{StaticResource Muted}"
+                   Margin="6,4,0,0" />
+        <scene:SceneViewport Grid.Row="1"><scene:SceneViewport.Scene>
+<Canvas x:Name="ListCanvas" Width="900" Height="150" />
+</scene:SceneViewport.Scene></scene:SceneViewport>
+        <TextBlock Grid.Row="2"
+                   x:Name="ListHintText"
+                   TextWrapping="Wrap"
+                   Foreground="{StaticResource Muted}"
+                   Text="Жёлтым выделены новые/перемещённые элементы."
+                   Margin="6,8,0,0" />
+      </Grid>
+    </Border>
+
+    <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled">
+    <Border  Background="#15263D" CornerRadius="14" Padding="14" Margin="12,0,0,0">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="sectionTitle" Text="Журнал алгоритма" />
+        <TextBlock x:Name="LinkedListCountText" Classes="panelLabel" Text="Элементов: 0" />
+        <ListBox x:Name="LinkedListLogList" Height="600" Background="Transparent" />
+      </StackPanel>
+    </Border>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

@@ -31,7 +31,8 @@ lab3/
 │   ├── Structures/
 │   │   ├── LinkedStack.cs
 │   │   ├── LinkedQueue.cs
-│   │   └── SystemQueueAdapter.cs
+│   │   ├── SystemQueueAdapter.cs
+│   │   └── CustomLinkedList.cs
 │   └── Collections/
 │       ├── StackCollectionAdapter.cs
 │       ├── LinkedQueueCollectionAdapter.cs
@@ -53,11 +54,16 @@ lab3/
 │   ├── ComplexityAnalyzer.cs
 │   ├── CsvReportWriter.cs
 │   ├── QueueBenchmarkService.cs
+│   ├── LinkedListTaskService.cs
 │   └── FileCatalog.cs
+├── Diagnostics/
+│   ├── SelfTestRunner.cs
+│   └── LinkedListSelfTestRunner.cs
 ├── UI/
 │   ├── ConsoleTheme.cs
 │   ├── ConsoleInput.cs
 │   ├── FilePicker.cs
+│   ├── ListDisplay.cs
 │   ├── Pause.cs
 │   └── Controllers/
 │       ├── Application.cs
@@ -65,14 +71,20 @@ lab3/
 │       ├── QueueLabController.cs
 │       ├── QueueBenchmarkController.cs
 │       ├── PostfixLabController.cs
-│       └── InfixLabController.cs
+│       ├── InfixLabController.cs
+│       └── LinkedListLabController.cs
 ├── StackInput/       — наборы операций стека
 ├── QueueInput/       — наборы операций очереди и файлы для сравнения
 ├── PostfixInput/     — постфиксные выражения
 ├── InfixInput/       — инфиксные выражения (в т.ч. сохранённые пользователем)
+├── DataStructuresVisualizer/ — отдельный Avalonia-проект
+│   ├── Views/ MainWindow, MazeView, QueueView, ExpressionTreeView
+│   ├── Services/ MazeService, BankService, ExpressionService
+│   └── Models/ MazeModels, BankModels, ExpressionModels
 ├── output/           — CSV-отчёты
 └── tools/
-    └── GenerateTestData.ps1
+    ├── GenerateTestData.ps1
+    └── GenerateStressData.ps1
 ```
 
 ## 3. Абстрактные интерфейсы
@@ -237,10 +249,109 @@ CSV хранит алгоритмическое время, экран — ещ�
 │   └── сравнительный анализ всех файлов → CSV
 ├── Постфиксные выражения
 │   └── выбор файла → вычисление → сложность → CSV
-└── Инфикс → постфикс
-    ├── ручной ввод и сохранение в InfixInput
-    └── обработка файла выражений → CSV
+├── Инфикс → постфикс
+│   ├── ручной ввод и сохранение в InfixInput
+│   └── обработка файла выражений → CSV
+└── Алгоритмы связного списка
+    └── задания 1–8 → случайные значения или ручной ввод → цветной результат
 ```
 
 В каждом подменю есть пункт `0 — Назад`; выбор файла также можно отменить.
 При отсутствии файлов выводится путь к папке и предложение вернуться назад.
+
+## 9. Дополнительные задания для `CustomLinkedList`
+
+Отдельный класс `CustomLinkedList` работает с целочисленным односвязным
+списком и не зависит от стека/очереди основного лабораторного задания.
+
+Реализованы и покрыты автономной диагностикой:
+
+1. `Reverse` — переворот списка изменением ссылок;
+2. `MoveLastToFront` и `MoveFirstToLast` — перенос крайнего элемента;
+3. `CountDistinct` — количество различных элементов;
+4. `RemoveNonUnique` — удаление всех значений, встречающихся более одного раза;
+5. `InsertSelfAfter` — вставка копии списка после первого `x`;
+6. `InsertSorted` — вставка в неубывающий список;
+7. `RemoveAll` — удаление всех вхождений `e`;
+8. `InsertBefore` — вставка `f` перед первым `e`;
+9. `AppendList` — дописывание списка E в конец L;
+10. `SplitByValue` — разбиение по первому вхождению X;
+11. `DoubleList` — удвоение списка;
+12. `SwapValues` — обмен двух элементов по значениям.
+
+Для задания 9 добавлены файлы `LinkedListInput/*.txt`: две строки
+со списками L и E. В интерфейсе можно загрузить их вручную или выбрать файл.
+
+Для проверки содержимого добавлен `ToArray`. Все тесты запускаются отдельно:
+
+```powershell
+dotnet run -- --linked-list-test
+```
+
+Задания также доступны из главного меню в разделе
+«Алгоритмы связного списка». Для каждого из них пользователь выбирает
+случайные значения (7–25 чисел от 0 до 999) или ручной ввод чисел через
+пробел. После этого запрашиваются параметры задания, если они есть.
+
+Цветовая логика:
+
+- исходный список и результат показываются всегда;
+- голубым выделяются только элементы, которые реально изменили своё
+  положение в результате операции;
+- элементы, просто сдвинутые вставкой, удалением или переносом другого
+  элемента, не выделяются;
+- для заданий без перемещения элементов (подсчёт и удаления) результат
+  показывается без выделения.
+
+Тесты проверяют границы: пустой список, один элемент, начало, середину,
+конец, отсутствие элемента, дубликаты и актуальность `Count`.
+
+## 10. Avalonia-визуализатор
+
+Новый проект `DataStructuresVisualizer` добавлен к решению как отдельная
+графическая демонстрация.
+
+### Структура
+
+- `Views/MainWindow.axaml` — левая навигация по шести разделам;
+- `Views/StackDemoView.axaml` — стек на `LinkedStack<T>` с операциями,
+  анимацией карточек и замерами времени чтения файла и операций;
+- `Views/InfixPostfixView.axaml` — пошаговое преобразование инфиксной записи;
+- `Views/QueueDemoView.axaml` — две реализации очереди и замеры;
+- `Views/ExamplesView.axaml` — три готовые визуализации раздела 3;
+- `Views/MazeView.axaml` — DFS-лабиринт и стек;
+- `Views/QueueView.axaml` — банк/МФЦ и очередь;
+- `Views/TreeView.axaml` — дерево арифметического выражения;
+- `Views/LinkedListAlgorithmsView.axaml` — 12 алгоритмов со связным списком;
+- `Services/LinkedListFileService.cs` — импорт двух списков L и E;
+- `Views/BinaryTreeView.axaml` — раздел 5: префиксное бинарное дерево;
+- `Services/BinaryTreeService.cs` — разбор строки, раскладка и статистика;
+- `Models/BinaryTreeModels.cs` — узел бинарного дерева;
+- `Services/MazeService.cs` — генерация, разбор и пошаговый DFS;
+- `Services/BankService.cs` — генерация и разбор клиентов;
+- `Services/InfixConversionService.cs` — кадры алгоритма shunting-yard,
+  все операторы `+ - * : ^ ln cos sin sqrt` и вычисление постфиксной записи;
+- `Services/ExpressionService.cs` — инфикс → постфикс, построение дерева,
+  раскладка и вычисление;
+- `Models/` — `MazePoint`, `BankCustomer`, `ExpressionNode`, шаги анимаций.
+
+### Логика анимаций
+
+- Лаборинт: клетки получают классы `visited`, `stackCell`, `current`, `dead`,
+  `pathCell`; изменения цвета анимируются `BrushTransition`.
+- Банк: клиенты добавляются в `Canvas`, их `Canvas.Left` и `Canvas.Top`
+  меняются с `DoubleTransition`; кассир меняет состояние через классы.
+- Дерево: узлы и рёбра отрисовываются на `Canvas`; выделение текущего узла
+  и уже вычисленных узлов выполняется через классы `current`, `done` и `cached`.
+- LRU-кэш выражений: собственная хеш-таблица с цепочками и двусвязным списком
+  порядка использования; повторно встречающийся узел берется по ключу
+  постфиксной формы без повторного рекурсивного вычисления.
+- Импорт операций: `OperationFileService` читает `StackInput`/`QueueInput`,
+  исключает `EXTREME`-файлы и позволяет выбрать конкретный набор.
+- Очередь: для каждой реализации накапливается общее время операций и
+  отображается в правом верхнем углу соответствующей области анимации.
+- Стек: `StackDemoView` использует `LinkedStack<T>` из основного проекта;
+  время чтения выбранного файла и время каждой операции (с накопительным
+  итогом) выводятся в правом верхнем углу области визуализации без CSV.
+- Связный список: позиции узлов интерполируются таймером каждые 16 мс;
+  новые узлы появляются с изменением прозрачности, удалённые исчезают.

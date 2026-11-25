@@ -1,0 +1,153 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:DataStructuresVisualizer.Views"
+        x:Class="DataStructuresVisualizer.Views.MainWindow"
+        Title="Data Structures Visualizer"
+        Width="1200"
+        Height="680"
+        MinWidth="1020"
+        MinHeight="620"
+        Background="{StaticResource AppBackground}">
+  <Window.Styles>
+    <Style Selector="ListBox.sidebar">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="ListBox.sidebar ListBoxItem">
+      <Setter Property="Padding" Value="12,10" />
+      <Setter Property="Margin" Value="0,2" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.18" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="ListBox.sidebar ListBoxItem:selected">
+      <Setter Property="Background" Value="#1A3A50" />
+    </Style>
+    <Style Selector="ListBox.sidebar TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.sidebarSection">
+      <Setter Property="Foreground" Value="{StaticResource Muted}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+  </Window.Styles>
+
+  <Grid Margin="24,18,24,20">
+    <Grid ColumnDefinitions="230,*">
+      <Border Grid.Column="0"
+              Background="{StaticResource PanelBackground}"
+              CornerRadius="18"
+              Padding="14">
+        <Grid RowDefinitions="Auto,*,Auto">
+          <TextBlock Grid.Row="0"
+                     Classes="sidebarSection"
+                     Margin="8,4,8,10"
+                     Text="РАЗДЕЛЫ" />
+
+          <ListBox Grid.Row="1"
+                   x:Name="NavigationList"
+                   Classes="sidebar"
+                   SelectionChanged="NavigationList_SelectionChanged">
+            <ListBoxItem>
+              <StackPanel Spacing="2">
+                <TextBlock Text="Раздел 1. Стек"
+                           FontSize="14"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="Push · Pop · Top · isEmpty · Print"
+                           FontSize="11"
+                           Foreground="{StaticResource Muted}"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem>
+              <StackPanel Spacing="2">
+                <TextBlock Text="Раздел 1.5. Преобразование инфиксных выражений"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="Инфиксная запись → постфиксная"
+                           FontSize="11"
+                           Foreground="{StaticResource Muted}" />
+              </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem>
+              <StackPanel Spacing="2">
+                <TextBlock Text="Раздел 2. Очередь"
+                           FontSize="14"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="Связная очередь и Queue&lt;T&gt;"
+                           FontSize="11"
+                           Foreground="{StaticResource Muted}" />
+              </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem>
+              <StackPanel Spacing="2">
+                <TextBlock Text="Раздел 3. Примеры динамических структур"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="Лабиринт · банк · дерево выражения"
+                           FontSize="11"
+                           Foreground="{StaticResource Muted}" />
+              </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem>
+              <StackPanel Spacing="2">
+                <TextBlock Text="Раздел 4. Алгоритмы со связными списками"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="12 алгоритмов с анимацией"
+                           FontSize="11"
+                           Foreground="{StaticResource Muted}" />
+              </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem>
+              <StackPanel Spacing="2">
+                <TextBlock Text="Раздел 5. Бинарное дерево"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="Префиксная сборка и NULL-стрелки"
+                           FontSize="11"
+                           Foreground="{StaticResource Muted}"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+            </ListBoxItem>
+          </ListBox>
+
+          <Border Grid.Row="2"
+                  Background="#102033"
+                  CornerRadius="10"
+                  Padding="10"
+                  Margin="2,10,2,2">
+            <TextBlock Text="6 разделов · визуальные демонстрации"
+                       Foreground="{StaticResource Muted}"
+                       FontSize="11"
+                       TextWrapping="Wrap" />
+          </Border>
+        </Grid>
+      </Border>
+
+      <Border Grid.Column="1"
+              Background="{StaticResource PanelBackground}"
+              CornerRadius="18"
+              Padding="14"
+              Margin="14,0,0,0">
+        <Grid>
+          <views:StackDemoView x:Name="StackDemoPage" />
+          <views:InfixPostfixView x:Name="InfixPage" IsVisible="False" />
+          <views:QueueDemoView x:Name="QueueDemoPage" IsVisible="False" />
+          <views:ExamplesView x:Name="ExamplesPage" IsVisible="False" />
+          <views:LinkedListAlgorithmsView x:Name="LinkedListPage" IsVisible="False" />
+          <views:BinaryTreeView x:Name="BinaryTreePage" IsVisible="False" />
+        </Grid>
+      </Border>
+    </Grid>
+  </Grid>
+</Window>
